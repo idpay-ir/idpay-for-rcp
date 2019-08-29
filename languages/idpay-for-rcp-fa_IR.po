@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-08-28 22:49+0430\n"
+"PO-Revision-Date: 2019-08-28 22:49+0430\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: ../includes/actions.php:45 ../includes/actions.php:46
+#: ../includes/filters.php:82 ../includes/filters.php:96
+msgid "تومان"
+msgstr "تومان"
+
+#: ../includes/actions.php:52 ../includes/actions.php:143
+msgid "IDPay API key is missing"
+msgstr "کلید API آی‌دی‌پی وارد نشده است"
+
+#: ../includes/actions.php:80 ../includes/actions.php:88
+#: ../includes/actions.php:179
+#, php-format
+msgid ""
+"Unfortunately, the payment couldn't be processed due to the following reason: "
+"%s"
+msgstr "با عرض پوزش، پرداخت شما به این علت نمی‌تواند پردازش شود: %s"
+
+#: ../includes/actions.php:132 ../includes/filters.php:20
+#: ../includes/filters.php:21
+msgid "IDPay Secure Gateway"
+msgstr "درگاه پرداخت امن آی‌دی‌پی"
+
+#: ../includes/actions.php:242
+msgid "Payment complete"
+msgstr "پرداخت انجام شد"
+
+#: ../includes/actions.php:243
+msgid "Transaction ID: "
+msgstr "شماره‌ی تراکنش: "
+
+#: ../includes/actions.php:243 ../includes/actions.php:259
+msgid " / Payment method: "
+msgstr " / نحوه‌ی پرداخت: "
+
+#: ../includes/actions.php:258
+msgid "Payment failed"
+msgstr "پرداخت ناموفق بود"
+
+#: ../includes/actions.php:259
+msgid "Transaction did not succeed due to following reason:"
+msgstr "تراکنش به این دلیل موفق نبود:"
+
+#: ../includes/actions.php:276
+msgid "Payment was successful. Transaction tracking number is: "
+msgstr "پرداخت موفق بود. شماره‌ی پیگیری تراکنش: "
+
+#: ../includes/actions.php:279
+msgid "Payment failed due to the following reason: "
+msgstr "پرداخت شما به این دلیل ناموفق بود: "
+
+#: ../includes/actions.php:279
+msgid "Your transaction tracking number is: "
+msgstr "شماره‌ی پیگیری تراکنش شما: "
+
+#: ../includes/admin/settings.php:18
+msgid "IDPay gateway settings"
+msgstr "گزینه‌های درگاه آی‌دی‌پی"
+
+#: ../includes/admin/settings.php:23
+msgid "API Key"
+msgstr "کلید API"
+
+#: ../includes/admin/settings.php:27
+msgid ""
+"You can create an API Key by going to your <a href=\"https://idpay.ir/"
+"dashboard/web-services\">IDPay account</a>."
+msgstr ""
+"شما می‌توانید کلید API را از <a href=\"https://idpay.ir/dashboard/web-services"
+"\">حساب آی‌دی‌پی خود</a> دریافت کنید."
+
+#: ../includes/admin/settings.php:32
+msgid "Sandbox mode"
+msgstr "حالت آزمایشی"
+
+#: ../includes/admin/settings.php:37
+msgid "If you check this option, the gateway will work in Test (Sandbox) mode."
+msgstr "اگر این گزینه را فعال کنید، پرداخت به صورت آزمایشی انجام خواهد شد."
+
+#: ../includes/filters.php:40
+msgid "تومان ایران"
+msgstr "تومان ایران"
+
+#: ../includes/filters.php:41
+msgid "ریال ایران"
+msgstr "ریال ایران"
+
+#: ../includes/filters.php:54 ../includes/filters.php:68
+msgid "ریال"
+msgstr "ریال"
+
+#: ../includes/functions.php:58
+msgid "Duplicate payment record"
+msgstr "رکورد پرداخت تکراری"
+
+#: ../includes/functions.php:94
+msgid "Payment has not been made."
+msgstr "رکورد پرداخت ساخته نشد."
+
+#: ../includes/functions.php:97
+msgid "Payment has been unsuccessful."
+msgstr "پرداخت ناموفق بود."
+
+#: ../includes/functions.php:100
+msgid "An error occurred."
+msgstr "خطایی رخ داده است."
+
+#: ../includes/functions.php:103
+msgid "Payment has been blocked."
+msgstr "پرداخت شما بلوکه شده است."
+
+#: ../includes/functions.php:106
+msgid "Returned to the payer."
+msgstr "پول به حساب شما برگشته داده شد."
+
+#: ../includes/functions.php:109
+msgid "System returned."
+msgstr "سیستم بازگشت."
+
+#: ../includes/functions.php:112
+msgid "Pending verification."
+msgstr "در انتظار تأیید پرداخت."
+
+#: ../includes/functions.php:115
+msgid "Payment has been verified."
+msgstr "پرداخت تأیید شد."
+
+#: ../includes/functions.php:118
+msgid "Payment has already been verified."
+msgstr "پرداخت قبلاً تأیید شده بود."
+
+#: ../includes/functions.php:121
+msgid "To the payee was deposited."
+msgstr "به حساب فروشنده واریز شد."
+
+#: ../includes/functions.php:124
+msgid "The code has not been defined."
+msgstr "کد تعریف نشده بود."
+
+#: ../languages/strings.php:3 strings.php:3
+msgid "IDPay for Restrict Content Pro"
+msgstr "آی‌دی‌پی برای Restrict Content Pro"
+
+#: ../languages/strings.php:5 strings.php:5
+msgid "IDPay"
+msgstr "آی‌دی‌پی"
+
+#: ../languages/strings.php:7 strings.php:7
+msgid ""
+"<a href=\"https://idpay.ir\">IDPay</a> secure payment gateway for Restrict "
+"Content Pro"
+msgstr ""
+"<a href=\"https://idpay.ir\">درگاه پرداخت آی‌دی‌پی</a> برای افزونه‌ی Restrict "
+"Content Pro"
