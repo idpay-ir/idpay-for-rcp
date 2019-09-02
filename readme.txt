@@ -1,7 +1,7 @@
 === IDPay for Restrict Content Pro (RCP) ===
 Contributors: parnibraan
 Tags: idpay, easy digital downloads, download, edd, digital downloads
-Stable tag: 2.0.1
+Stable tag: 1.0.1
 Tested up to: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -26,6 +26,8 @@ After creating a web service on https://idpay.ir and getting an API Key, follow 
 After that, if a customer is going to purchase a membership plan which is created byRestrict Content Pro, The IDPay payment gateway will appear and she can pay with it.
 
 == Changelog ==
+= 1.0.1, September 1, 2019 =
+* Fix a bug in currency formatter in older RPC versions.
 
 = 1.0, August 28, 2019 =
 * First Release

@@ -50,8 +50,8 @@ function rcp_idpay_currencies( $currencies ) {
  * @param int $price
  * @return string
  */
-function rcp_idpay_irr_before( $formatted_price, $currency_code, $price ) {
-	return __( 'ریال', 'idpay-for-rcp' ) . ' ' . $price;
+function rcp_idpay_irr_before( $formatted_price, $currency_code = null, $price = null ) {
+	return __( 'ریال', 'idpay-for-rcp' ) . ' ' . ( $price ? $price : $formatted_price );
 }
 
 add_filter( 'rcp_irr_currency_filter_before', 'rcp_idpay_irr_before' );
@@ -64,8 +64,8 @@ add_filter( 'rcp_irr_currency_filter_before', 'rcp_idpay_irr_before' );
  * @param int $price
  * @return string
  */
-function rcp_idpay_irr_after( $formatted_price, $currency_code, $price ) {
-	return $price . ' ' . __( 'ریال', 'idpay-for-rcp' );
+function rcp_idpay_irr_after( $formatted_price, $currency_code = null, $price = null ) {
+	return ( $price ? $price : $formatted_price ) . ' ' . __( 'ریال', 'idpay-for-rcp' );
 }
 
 add_filter( 'rcp_irr_currency_filter_after', 'rcp_idpay_irr_after' );
@@ -78,8 +78,8 @@ add_filter( 'rcp_irr_currency_filter_after', 'rcp_idpay_irr_after' );
  * @param int $price
  * @return string
  */
-function rcp_idpay_irt_after( $formatted_price, $currency_code, $price ) {
-	return $price . ' ' . __( 'تومان', 'idpay-for-rcp' );
+function rcp_idpay_irt_after( $formatted_price, $currency_code = null, $price = null ) {
+	return ( $price ? $price : $formatted_price ) . ' ' . __( 'تومان', 'idpay-for-rcp' );
 }
 
 add_filter( 'rcp_irt_currency_filter_after', 'rcp_idpay_irt_after' );
@@ -92,8 +92,8 @@ add_filter( 'rcp_irt_currency_filter_after', 'rcp_idpay_irt_after' );
  * @param int $price
  * @return string
  */
-function rcp_idpay_irt_before( $formatted_price, $currency_code, $price ) {
-	return __( 'تومان', 'idpay-for-rcp' ) . ' ' . $price;
+function rcp_idpay_irt_before( $formatted_price, $currency_code = null, $price = null ) {
+	return __( 'تومان', 'idpay-for-rcp' ) . ' ' . ( $price ? $price : $formatted_price );
 }
 
 add_filter( 'rcp_irt_currency_filter_before', 'rcp_idpay_irt_before' );
