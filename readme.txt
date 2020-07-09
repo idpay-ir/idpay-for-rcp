@@ -1,5 +1,5 @@
 === IDPay for Restrict Content Pro (RCP) ===
-Contributors: parnibraan
+Contributors: parnibraan, vispa
 Tags: idpay, restrict-content-pro, payment, gateway, آیدی پی
 Stable tag: 1.0.0
 Tested up to: 5.2
