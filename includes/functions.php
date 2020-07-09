@@ -66,7 +66,7 @@ function rcp_idpay_check_verification( $id ) {
  * @param string $param
  * @return void
  */
-function rcp_idpay_set_verification( $payment_id, $param ) {
+function rcp_idpay_set_verification( $payment_id, $params ) {
 	global $wpdb;
 
 	if ( ! function_exists( 'rcp_get_payment_meta_db_name' ) ) {
@@ -75,11 +75,15 @@ function rcp_idpay_set_verification( $payment_id, $param ) {
 
 	$table = rcp_get_payment_meta_db_name();
 
-	$wpdb->insert( $table, array(
-		'payment_id'		=> $payment_id,
-		'meta_key'			=> '_verification_params',
-		'meta_value'		=> $param,
-	) );
+	$wpdb->insert(
+		$table,
+		array(
+			'payment_id'	=> $payment_id,
+			'meta_key'		=> '_verification_params',
+			'meta_value'	=> $params,
+		), 
+		array('%d', '%s', '%s')
+	);
 }
 
 /**

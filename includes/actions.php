@@ -30,13 +30,6 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
 	$amount = str_replace( ',', '', $subscription_data['price'] );
 
-	$payment_data = array(
-		'user_id'			=> $subscription_data['user_id'],
-		'subscription_name'	=> $subscription_data['subscription_name'],
-		'subscription_key'	=> $subscription_data['key'],
-		'amount'			=> $amount,
-	);
-
 	// Check if the currency is in Toman.
 	if ( in_array( $rcp_options['currency'], array(
 		'irt',
@@ -50,16 +43,16 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
 	// Send the request to IDPay.
 	$api_key = isset( $rcp_options['idpay_api_key'] ) ? $rcp_options['idpay_api_key'] : wp_die( __( 'IDPay API key is missing' ) );
-	$sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] ) ? true : false;
+	$sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes' ) ? true : false;
 	$callback = add_query_arg( 'gateway', 'idpay-for-rcp', $subscription_data['return_url'] );
 
 	$data = array(
-		'order_id'			=> $payment_data['subscription_key'],
+		'order_id'			=> $subscription_data['payment_id'],
 		'amount'			=> intval( $amount ),
 		'name'				=> $subscription_data['user_name'],
 		'phone'				=> '',
 		'mail'				=> $subscription_data['user_email'],
-		'desc'				=> $subscription_data['subscription_name'],
+		'desc'				=> "{$subscription_data['subscription_name']} - {$subscription_data['key']}",
 		'callback'			=> $callback,
 	);
 
@@ -82,13 +75,15 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
 	$http_status	= wp_remote_retrieve_response_code( $response );
 	$result			= wp_remote_retrieve_body( $response );
-	$result			= json_decode( $result, true );
+	$result			= json_decode( $result );
 
 	if ( 201 !== $http_status || empty( $result ) || empty( $result->link ) ) {
 		wp_die( sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $result->error_message ) );
 	}
 
-	$_SESSION['idpay_payment_data'] = $payment_data;
+	// Update transaction id into payment
+	$rcp_payments = new RCP_Payments();
+	$rcp_payments->update( $subscription_data['payment_id'], array( 'transaction_id' => $result->id ) );
 
 	ob_end_clean();
 	if ( headers_sent() ) {
@@ -108,6 +103,7 @@ add_action( 'rcp_gateway_idpay', 'rcp_idpay_create_payment' );
  * @return void
  */
 function rcp_idpay_verify() {
+
 	if ( ! isset( $_GET['gateway'] ) )
 		return;
 
@@ -122,26 +118,23 @@ function rcp_idpay_verify() {
 	if ( 'idpay-for-rcp' !== sanitize_text_field( $_GET['gateway'] ) )
 		return;
 
-	$payment_data = isset( $_SESSION['idpay_payment_data'] ) ? $_SESSION['idpay_payment_data'] : NULL;
-	if ( is_null( $payment_data ) )
+	$rcp_payments = new RCP_Payments();
+	$payment_data = $rcp_payments->get_payment($_POST['order_id']);
+
+	if ( empty( $payment_data ) )
 		return;
 
-	extract( $payment_data );
+	extract( (array) $payment_data );
 	$user_id = intval( $user_id );
+	$subscription_name = $subscription;
 
-	$payment_method = __( 'IDPay Secure Gateway', 'idpay-for-rcp' );
+	if ( $payment_data->status == 'pending'
+		&& $payment_data->gateway == 'idpay'
+		&& $payment_data->amount == $_POST['amount']
+		&& $payment_data->transaction_id == $_POST['id'] ) {
 
-	$new_payment = !! $wpdb->get_results(
-		$wpdb->prepare(
-			"SELECT id FROM $rcp_payments_db_name WHERE `subscription_key` = '%s' AND `payment_type` = '%s'",
-			$subscription_key,
-			$payment_method
-		)
-	);
-
-	if ( $new_payment ) {
 		$api_key = isset( $rcp_options['idpay_api_key'] ) ? $rcp_options['idpay_api_key'] : wp_die( __( 'IDPay API key is missing' ) );
-		$sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] ) ? true : false;
+		$sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes' ) ? true : false;
 
 		$status         = sanitize_text_field( $_POST['status'] );
 		$track_id       = sanitize_text_field( $_POST['track_id'] );
@@ -152,50 +145,55 @@ function rcp_idpay_verify() {
 		$hashed_card_no = sanitize_text_field( $_POST['hashed_card_no'] );
 		$date           = sanitize_text_field( $_POST['date'] );
 
-		if ( empty( $id ) || empty( $order_id ) )
-			return;
-
-		rcp_idpay_check_verification( $id );
-
-		$data = array(
-			'id'		=> $id,
-			'order_id'	=> $order_id,
-		);
-
-		$headers = array(
-			'Content-Type'		=> 'application/json',
-			'X-API-KEY'			=> $api_key,
-			'X-SANDBOX'			=> $sandbox,
-		);
-
-		$args = array(
-			'body'				=> json_encode( $data ),
-			'headers'			=> $headers,
-			'timeout'			=> 15,
-		);
-
-		$response = rcp_idpay_call_gateway_endpoint( 'https://api.idpay.ir/v1.1/payment/verify', $args );
-		if ( is_wp_error( $response ) ) {
-			wp_die( sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $response->get_error_message() ) );
-		}
-
-		$http_status	= wp_remote_retrieve_response_code( $response );
-		$result			= wp_remote_retrieve_body( $response );
-		$result			= json_decode( $result, true );
-
-
-		$status = '';
-		$fault = '';
-
-		if ( 200 !== $http_status ) {
+		if ( $status != 10 ) {
 			$status = 'failed';
-			$fault = $result->error_message;
 		}
-		if ( $result->status >= 100 ) {
-			$status = 'complete';
-		} else {
-			$status = 'failed';
-			$fault = rcp_idpay_fault_string( $result->status );
+		else {
+
+			rcp_idpay_check_verification( $id );
+
+			$data = array(
+				'id'		=> $id,
+				'order_id'	=> $order_id,
+			);
+
+			$headers = array(
+				'Content-Type'		=> 'application/json',
+				'X-API-KEY'			=> $api_key,
+				'X-SANDBOX'			=> $sandbox,
+			);
+
+			$args = array(
+				'body'				=> json_encode( $data ),
+				'headers'			=> $headers,
+				'timeout'			=> 15,
+			);
+
+			$response = rcp_idpay_call_gateway_endpoint( 'https://api.idpay.ir/v1.1/payment/verify', $args );
+			if ( is_wp_error( $response ) ) {
+				wp_die( sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $response->get_error_message() ) );
+			}
+
+			$http_status	= wp_remote_retrieve_response_code( $response );
+			$result			= wp_remote_retrieve_body( $response );
+			$result			= json_decode( $result );
+
+
+			$status = '';
+			$fault = '';
+
+			if ( 200 !== $http_status ) {
+				$status = 'failed';
+				$fault = $result->error_message;
+			}
+			else {
+				if ( $result->status >= 100 ) {
+					$status = 'complete';
+				} else {
+					$status = 'failed';
+					$fault = rcp_idpay_fault_string( $result->status );
+				}
+			}
 		}
 
 		// Let RCP plugin acknowledge the payment.
@@ -212,14 +210,16 @@ function rcp_idpay_verify() {
 			);
 
 			$rcp_payments = new RCP_Payments();
-			rcp_idpay_set_verification( $rcp_payments->insert( $payment_data ), $id );
+			$payment_id = $rcp_payments->insert( $payment_data );
+			$rcp_payments->update( $order_id, array( 'status' => $status ) );
+			rcp_idpay_set_verification( $payment_id, $id );
 
 			$new_subscription_id = get_user_meta( $user_id, 'rcp_subscription_level_new', true );
 			if ( ! empty( $new_subscription_id ) ) {
 				update_user_meta( $user_id, 'rcp_subscription_level', $new_subscription_id );
 			}
-			rcp_set_status( $user_id, 'active' );
 
+			rcp_set_status( $user_id, 'active' );
 
 			if ( version_compare( RCP_PLUGIN_VERSION, '2.1.0', '<' ) ) {
 				rcp_email_subscription_status( $user_id, 'active' );
@@ -254,6 +254,10 @@ function rcp_idpay_verify() {
 		}
 
 		if ( 'failed' === $status ) {
+
+			$rcp_payments = new RCP_Payments();
+			$rcp_payments->update( $order_id, array( 'status' => $status ) );
+
 			$log_data = array(
 				'post_title'   => __( 'Payment failed', 'idpay-for-rcp' ),
 				'post_content' => __( 'Transaction did not succeed due to following reason:', 'rcp_zaringate' ) . $fault . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_method,
@@ -269,14 +273,14 @@ function rcp_idpay_verify() {
 			WP_Logging::insert_log( $log_data, $log_meta );
 		}
 
-		add_filter( 'the_content', function( $content ) use( $status, $id, $fault ) {
+		add_filter( 'the_content', function( $content ) use( $status, $track_id, $fault ) {
 			$message = '';
 
 			if ( $status == 'complete' ) {
-				$message = '<br>' . __( 'Payment was successful. Transaction tracking number is: ', 'idpay-for-rcp' ) . $id;
+				$message = '<br><center>' . __( 'Payment was successful. Transaction tracking number is: ', 'idpay-for-rcp' ) . $track_id . '</center>';
 			}
 			if ( $status == 'failed' ) {
-				$message = '<br>' . __( 'Payment failed due to the following reason: ', 'idpay-for-rcp' ) . $fault . '<br>' . __( 'Your transaction tracking number is: ', 'idpay-for-rcp' ) . $id;
+				$message = '<br><center>' . __( 'Payment failed due to the following reason: ', 'idpay-for-rcp' ) . $fault . '<br>' . __( 'Your transaction tracking number is: ', 'idpay-for-rcp' ) . $track_id . '</center>';
 			}
 
 			return $content . $message;
