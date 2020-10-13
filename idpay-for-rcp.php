@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Restrict Content Pro
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Restrict Content Pro
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author URI: https://idpay.ir
  * Text Domain: idpay-for-rcp
  * Domain Path: languages
@@ -72,7 +72,7 @@ final class RCP_IDPay {
 
 		// Plugin version.
 		if ( ! defined( 'RCP_IDPAY_VERSION' ) ) {
-			define( 'RCP_IDPAY_VERSION', '1.0.0' );
+			define( 'RCP_IDPAY_VERSION', '1.0.1' );
 		}
 
 		// Plugin directory path.
@@ -136,7 +136,7 @@ final class RCP_IDPay {
 		 * @var $get_locale The locale to use. Uses get_user_locale()` in WordPress 4.7 or greater,
 		 *                  otherwise uses `get_locale()`.
 		 */
-		$mofile        = sprintf( '%1$s-%2$s.mo', 'idpay-for-rcp', $locale );
+		$mofile         = sprintf( '%1$s-%2$s.mo', 'idpay-for-rcp', $locale );
 		// Look for wp-content/languages/idpay-for-rcp/idpay-for-rcp-{lang}_{country}.mo
 		$mofile_global1 = WP_LANG_DIR . '/idpay-for-rcp/idpay-for-rcp-' . $locale . '.mo';
 		// Look for wp-content/languages/rcp-iday/{lang}_{country}.mo
