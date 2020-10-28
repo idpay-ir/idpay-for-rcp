@@ -112,6 +112,12 @@ function rcp_idpay_fault_string( $code ) {
 		case 6:
 			return __( 'System returned.', 'idpay-for-rcp' );
 
+		case 7:
+			return __( 'User cancelled the payment.', 'idpay-for-rcp' );
+
+		case 8:
+			return __( 'Redirected to bank.', 'idpay-for-rcp' );
+
 		case 10:
 			return __( 'Pending verification.', 'idpay-for-rcp' );
 
