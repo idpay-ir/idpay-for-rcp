@@ -119,6 +119,7 @@ function rcp_idpay_verify() {
     $track_id  = !empty($_POST['track_id'])? sanitize_text_field($_POST['track_id']) : (!empty($_GET['track_id'])? sanitize_text_field($_GET['track_id']) : NULL);
     $id        = !empty($_POST['id'])      ? sanitize_text_field($_POST['id'])       : (!empty($_GET['id'])      ? sanitize_text_field($_GET['id'])       : NULL);
     $order_id  = !empty($_POST['order_id'])? sanitize_text_field($_POST['order_id']) : (!empty($_GET['order_id'])? sanitize_text_field($_GET['order_id']) : NULL);
+	$params    = !empty($_POST['id']) ? $_POST : $_GET;
 
     if( empty($order_id) || empty($id) ){
         return;
@@ -226,7 +227,8 @@ function rcp_idpay_verify() {
 
                 $log_data = array(
                     'post_title'   => __( 'Payment complete', 'idpay-for-rcp' ),
-                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method,
+                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method
+						. ' Data: ' . print_r($result, true),
                     'post_parent'  => 0,
                     'log_type'     => 'gateway_error'
                 );
@@ -252,7 +254,8 @@ function rcp_idpay_verify() {
 
         $log_data = array(
             'post_title'   => __( 'Payment failed', 'idpay-for-rcp' ),
-            'post_content' => __( 'Transaction did not succeed due to following reason:', 'rcp_zaringate' ) . $fault . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method,
+            'post_content' => __( 'Transaction did not succeed due to following reason:', 'idpay-for-rcp' ) . $fault
+				. __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method. ' Data: ' . print_r($params, true),
             'post_parent'  => 0,
             'log_type'     => 'gateway_error'
         );
