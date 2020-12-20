@@ -43,6 +43,19 @@ function rcp_idpay_settings( $rcp_options ) {
 				</p>
 			</td>
 		</tr>
+		<tr valign="top">
+			<th>
+				<label for="rcp_settings[idpay_symbol]" id="idpaySymbol"><?php _e( 'Show currency?', 'idpay-for-rcp' ); ?></label>
+			</th>
+			<td>
+				<p class="description">
+					<select id="rcp_settings[idpay_symbol]" name="rcp_settings[idpay_symbol]">
+						<option value="yes" <?php selected('yes', isset($rcp_options['idpay_symbol']) ? $rcp_options['idpay_symbol'] : '');?>><?php _e('Yes', 'idpay-for-rcp');?></option>
+						<option value="no" <?php selected('no', isset($rcp_options['idpay_symbol']) ? $rcp_options['idpay_symbol'] : '');?>><?php _e('No', 'idpay-for-rcp');?></option>
+					</select>
+				</p>
+			</td>
+		</tr>
 	</table>
 	<?php
 }
