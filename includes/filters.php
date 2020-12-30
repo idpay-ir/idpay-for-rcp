@@ -37,66 +37,12 @@ function rcp_idpay_currencies( $currencies ) {
 	unset( $currencies['RIAL'], $currencies['IRR'], $currencies['IRT'] );
 
 	return array_merge( array(
-		'IRT'		=> __( 'تومان ایران', 'idpay-for-rcp' ),
-		'IRR'		=> __( 'ریال ایران', 'idpay-for-rcp' ),
+		'IRT'		=> __( 'تومان ایران (تومان)', 'idpay-for-rcp' ),
+		'IRR'		=> __( 'ریال ایران (&#65020;)', 'idpay-for-rcp' ),
 	), $currencies );
 }
 
-/**
- * Format IRR currency displaying.
- *
- * @param string $formatted_price
- * @param string $currency_code
- * @param int $price
- * @return string
- */
-function rcp_idpay_irr_before( $formatted_price, $currency_code = null, $price = null ) {
-	return __( 'ریال', 'idpay-for-rcp' ) . ' ' . ( $price ? $price : $formatted_price );
-}
-
-add_filter( 'rcp_irr_currency_filter_before', 'rcp_idpay_irr_before' );
-
-/**
- * Format IRR currency displaying.
- *
- * @param string $formatted_price
- * @param string $currency_code
- * @param int $price
- * @return string
- */
-function rcp_idpay_irr_after( $formatted_price, $currency_code = null, $price = null ) {
-	return ( $price ? $price : $formatted_price ) . ' ' . __( 'ریال', 'idpay-for-rcp' );
-}
-
-add_filter( 'rcp_irr_currency_filter_after', 'rcp_idpay_irr_after' );
-
-/**
- * Format IRT currency displaying.
- *
- * @param string $formatted_price
- * @param string $currency_code
- * @param int $price
- * @return string
- */
-function rcp_idpay_irt_after( $formatted_price, $currency_code = null, $price = null ) {
-	return ( $price ? $price : $formatted_price ) . ' ' . __( 'تومان', 'idpay-for-rcp' );
-}
-
-add_filter( 'rcp_irt_currency_filter_after', 'rcp_idpay_irt_after' );
-
-/**
- * Format IRT currency displaying.
- *
- * @param string $formatted_price
- * @param string $currency_code
- * @param int $price
- * @return string
- */
-function rcp_idpay_irt_before( $formatted_price, $currency_code = null, $price = null ) {
-	return __( 'تومان', 'idpay-for-rcp' ) . ' ' . ( $price ? $price : $formatted_price );
-}
-
-add_filter( 'rcp_irt_currency_filter_before', 'rcp_idpay_irt_before' );
+add_filter( 'rcp_currencies', 'rcp_idpay_currencies' );
 
 /**
  * Save old roles of a user when updating it.
@@ -120,3 +66,45 @@ function rcp_idpay_registration_data( $user ) {
 }
 
 add_filter( 'rcp_user_registration_data', 'rcp_idpay_registration_data' );
+
+/**
+ * Sets decimal to zero.
+ *
+ * @param bool $is_zero_decimal_currency
+ *
+ * @return bool
+ */
+function rcp_idpay_is_zero_decimal_currency( $is_zero_decimal_currency = FALSE ) {
+	$currency = rcp_get_currency();
+	if ( in_array($currency, ['IRT', 'IRR']) ) {
+		return TRUE;
+	}
+
+	return $is_zero_decimal_currency;
+}
+
+add_filter( 'rcp_is_zero_decimal_currency', 'rcp_idpay_is_zero_decimal_currency' );
+
+/**
+ * Format IRT currency Symbol.
+ *
+ * @return string
+ */
+function rcp_idpay_irr_symbol() {
+	global $rcp_options;
+	return empty($rcp_options['idpay_symbol']) || $rcp_options['idpay_symbol'] == 'yes' ? ' &#65020; ' : '';
+}
+
+add_filter( 'rcp_irr_symbol', 'rcp_idpay_irr_symbol' );
+
+/**
+ * Format IRT currency Symbol.
+ *
+ * @return string
+ */
+function rcp_idpay_irt_symbol() {
+	global $rcp_options;
+	return empty($rcp_options['idpay_symbol']) || $rcp_options['idpay_symbol'] == 'yes' ? ' تومان ' : '';
+}
+
+add_filter( 'rcp_irt_symbol', 'rcp_idpay_irt_symbol' );
