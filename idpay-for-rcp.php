@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Restrict Content Pro
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Restrict Content Pro
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author URI: https://idpay.ir
  * Text Domain: idpay-for-rcp
  * Domain Path: languages
@@ -72,7 +72,7 @@ final class RCP_IDPay {
 
 		// Plugin version.
 		if ( ! defined( 'RCP_IDPAY_VERSION' ) ) {
-			define( 'RCP_IDPAY_VERSION', '1.0.1' );
+			define( 'RCP_IDPAY_VERSION', '1.0.3' );
 		}
 
 		// Plugin directory path.
