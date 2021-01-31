@@ -70,15 +70,17 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
     $response = rcp_idpay_call_gateway_endpoint( 'https://api.idpay.ir/v1.1/payment', $args );
     if ( is_wp_error( $response ) ) {
-        wp_die( sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $response->get_error_message() ) );
-    }
+		rcp_errors()->add( 'idpay_error', sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $response->get_error_message() ), 'register' );
+		return;
+	}
 
     $http_status	= wp_remote_retrieve_response_code( $response );
     $result			= wp_remote_retrieve_body( $response );
     $result			= json_decode( $result );
 
     if ( 201 !== $http_status || empty( $result ) || empty( $result->link ) ) {
-        wp_die( sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $result->error_message ) );
+		rcp_errors()->add( 'idpay_error', sprintf( __( 'Unfortunately, the payment couldn\'t be processed due to the following reason: %s' ), $result->error_message ), 'register' );
+		return;
     }
 
     // Update transaction id into payment
@@ -313,3 +315,23 @@ function rcp_idpay_change_cancelled_to_expired( $status, $user_id ) {
 }
 
 add_action( 'rcp_set_status', 'rcp_idpay_change_cancelled_to_expired', 10, 2 );
+
+
+function rcp_idpay_process_registration() {
+	// check nonce
+	if ( !isset( $_POST["rcp_register_nonce"] ) ) {
+		return;
+	}
+
+	if ( ! wp_verify_nonce( $_POST['rcp_register_nonce'], 'rcp-register-nonce' ) ) {
+		$error = '<span style="font-size: 1.6rem;color: #f44336;" class="">'.  __( 'Error in form parameters. the page needs to be reloaded.', 'idpay-for-rcp' ) .'  </span><hr>';
+		$script = '<script type="text/javascript"> setTimeout(function() { top.location.href = "' . $_SERVER["HTTP_REFERER"] . '" }, 1000); </script>';
+
+		wp_send_json_error( array(
+			'success'          => false,
+			'errors'           => $error . $script,
+		) );
+	}
+}
+
+add_action( 'wp_ajax_rcp_process_register_form', 'rcp_idpay_process_registration' , 100 );
