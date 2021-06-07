@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Restrict Content Pro
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Restrict Content Pro
- * Version: 1.0.3
+ * Version: 1.1.0
  * Author URI: https://idpay.ir
  * Text Domain: idpay-for-rcp
  * Domain Path: languages
@@ -55,8 +55,7 @@ final class RCP_IDPay {
 			self::$instance->setup_constants();
 
 			add_action( 'plugins_loaded', [ self::$instance, 'load_textdomain' ] );
-
-			self::$instance->includes();
+			add_action( 'plugins_loaded', [ self::$instance, 'includes' ] );
 		}
 
 		return self::$instance;
@@ -72,7 +71,7 @@ final class RCP_IDPay {
 
 		// Plugin version.
 		if ( ! defined( 'RCP_IDPAY_VERSION' ) ) {
-			define( 'RCP_IDPAY_VERSION', '1.0.3' );
+			define( 'RCP_IDPAY_VERSION', '1.1.0' );
 		}
 
 		// Plugin directory path.
@@ -92,11 +91,12 @@ final class RCP_IDPay {
 	 * @access private
 	 * @return void
 	 */
-	private function includes() {
+	public function includes() {
 		require_once RCP_IDPAY_PLUGIN_DIR . 'includes/functions.php';
 		require_once RCP_IDPAY_PLUGIN_DIR . 'includes/filters.php';
 		require_once RCP_IDPAY_PLUGIN_DIR . 'includes/admin/settings.php';
 		require_once RCP_IDPAY_PLUGIN_DIR . 'includes/actions.php';
+		require_once RCP_IDPAY_PLUGIN_DIR . 'includes/RCP_Payment_Gateway_IDPay.php';
 	}
 
 	/**
