@@ -19,6 +19,7 @@ function rcp_idpay_register_gateway( $gateways ) {
 	$gateways['idpay']	= [
 		'label'			=> __( 'IDPay Secure Gateway', 'idpay-for-rcp' ),
 		'admin_label'	=> __( 'IDPay Secure Gateway', 'idpay-for-rcp' ),
+		'class'			=> 'RCP_Payment_Gateway_IDPay',
 	];
 
 	return $gateways;

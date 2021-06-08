@@ -11,7 +11,6 @@
  * the user to the proper page.
  *
  * @param array|object $subscription_data
- * @return void
  */
 function rcp_idpay_create_payment( $subscription_data ) {
 
@@ -43,7 +42,7 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
     // Send the request to IDPay.
     $api_key = isset( $rcp_options['idpay_api_key'] ) ? $rcp_options['idpay_api_key'] : wp_die( __( 'IDPay API key is missing' ) );
-    $sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes' ) ? true : false;
+    $sandbox = isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes';
     $callback = add_query_arg( 'gateway', 'idpay-for-rcp', $subscription_data['return_url'] );
 
     $data = array(
@@ -141,7 +140,7 @@ function rcp_idpay_verify() {
     }
 
     $api_key = isset( $rcp_options['idpay_api_key'] ) ? $rcp_options['idpay_api_key'] : wp_die( __( 'IDPay API key is missing' ) );
-    $sandbox = ( isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes' ) ? true : false;
+    $sandbox = isset( $rcp_options['idpay_sandbox'] ) && $rcp_options['idpay_sandbox'] == 'yes';
 
     if ( $status != 10 ) {
         $fault = rcp_idpay_fault_string( $status );
@@ -191,7 +190,7 @@ function rcp_idpay_verify() {
                 $payment_data = array(
                     'date'				=> date( 'Y-m-d g:i:s' ),
                     'subscription'		=> $subscription_name,
-                    'payment_type'		=> $payment_data->payment_method,
+                    'payment_type'		=> $payment_data->gateway,
                     'subscription_key'	=> $payment_data->subscription_key,
                     'amount'			=> $result->amount,
                     'user_id'			=> $user_id,
@@ -229,7 +228,7 @@ function rcp_idpay_verify() {
 
                 $log_data = array(
                     'post_title'   => __( 'Payment complete', 'idpay-for-rcp' ),
-                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method
+                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->gateway
 						. ' Data: ' . print_r($result, true),
                     'post_parent'  => 0,
                     'log_type'     => 'gateway_error'
@@ -257,7 +256,7 @@ function rcp_idpay_verify() {
         $log_data = array(
             'post_title'   => __( 'Payment failed', 'idpay-for-rcp' ),
             'post_content' => __( 'Transaction did not succeed due to following reason:', 'idpay-for-rcp' ) . $fault
-				. __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->payment_method. ' Data: ' . print_r($params, true),
+				. __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->gateway. ' Data: ' . print_r($params, true),
             'post_parent'  => 0,
             'log_type'     => 'gateway_error'
         );
