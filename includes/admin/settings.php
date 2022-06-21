@@ -3,7 +3,7 @@
  * IDPay gateway settings.
  *
  * @package RCP_IDPay
- * @since 1.0
+ * @since 1.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

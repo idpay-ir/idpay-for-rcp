@@ -3,7 +3,7 @@
  * Required functions.
  *
  * @package RCP_IDPay
- * @since 1.0
+ * @since 1.2
  */
 
 /**
@@ -46,14 +46,7 @@ function rcp_idpay_check_verification( $id ) {
 	}
 
 	$table = rcp_get_payment_meta_db_name();
-
-	$check = $wpdb->get_row(
-		$wpdb->prepare(
-			"SELECT * FROM {$table} WHERE meta_key='_verification_params' AND meta_value='idpay-%s'",
-			$id
-		)
-	);
-
+	$check = $wpdb->get_row("SELECT * FROM {$table} WHERE meta_key='_verification_params' AND meta_value='idpay-{$id}'");
 	if ( ! empty( $check ) ) {
 		wp_die( __( 'Duplicate payment record', 'idpay-for-rcp' ) );
 	}
@@ -66,7 +59,7 @@ function rcp_idpay_check_verification( $id ) {
  * @param string $param
  * @return void
  */
-function rcp_idpay_set_verification( $payment_id, $params ) {
+function rcp_idpay_set_verification( $payment_id, $trans_id ) {
 	global $wpdb;
 
 	if ( ! function_exists( 'rcp_get_payment_meta_db_name' ) ) {
@@ -80,8 +73,8 @@ function rcp_idpay_set_verification( $payment_id, $params ) {
 		array(
 			'payment_id'	=> $payment_id,
 			'meta_key'		=> '_verification_params',
-			'meta_value'	=> $params,
-		), 
+			'meta_value'	=> "idpay-{$trans_id}",
+		),
 		array('%d', '%s', '%s')
 	);
 }
