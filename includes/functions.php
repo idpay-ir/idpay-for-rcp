@@ -49,7 +49,7 @@ function rcp_idpay_check_verification( $id ) {
 
 	$check = $wpdb->get_row(
 		$wpdb->prepare(
-			"SELECT * FROM {$table} WHERE meta_key='_verification_params' AND meta_value='idpay-%s'",
+			"SELECT * FROM {$table} WHERE meta_key='_verification_params' AND meta_value='%s'",
 			$id
 		)
 	);
@@ -78,7 +78,7 @@ function rcp_idpay_set_verification( $payment_id, $params ) {
 	$wpdb->insert(
 		$table,
 		array(
-			'payment_id'	=> $payment_id,
+			'rcp_payment_id'	=> $payment_id,
 			'meta_key'		=> '_verification_params',
 			'meta_value'	=> $params,
 		), 
