@@ -195,6 +195,7 @@ function rcp_idpay_verify() {
                     'amount'			=> $result->amount,
                     'user_id'			=> $user_id,
                     'transaction_id'	=> $id,
+					'object_id'         => $payment_data->object_id,
                 );
 
                 $rcp_payments = new RCP_Payments();
