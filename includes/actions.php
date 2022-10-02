@@ -16,13 +16,11 @@ function rcp_idpay_create_payment( $subscription_data ) {
 
     global $rcp_options;
 
-    $new_subscription_id = get_user_meta( $subscription_data['user_id'], 'rcp_subscription_level', true );
-    if ( ! empty( $new_subscription_id ) ) {
-        update_user_meta( $subscription_data['user_id'], 'rcp_subscription_level_new', $new_subscription_id );
-    }
+	$subscription_id = get_user_meta( $subscription_data['user_id'], 'rcp_subscription_level', true );
+	update_user_meta( $subscription_data['user_id'], 'rcp_subscription_level_old', $subscription_id );
 
-    $old_subscription_id = get_user_meta( $subscription_data['user_id'], 'rcp_subscription_level_old', true );
-    update_user_meta( $subscription_data['user_id'], 'rcp_subscription_level', $old_subscription_id );
+	$new_subscription_id = get_user_meta( $subscription_data['user_id'], 'rcp_pending_subscription_level', true );
+	update_user_meta( $subscription_data['user_id'], 'rcp_subscription_level_new', $new_subscription_id );
 
     // Start the output buffering.
     ob_start();
@@ -118,11 +116,11 @@ function rcp_idpay_verify() {
 
     $status    = !empty($_POST['status'])  ? sanitize_text_field($_POST['status'])   : (!empty($_GET['status'])  ? sanitize_text_field($_GET['status'])   : NULL);
     $track_id  = !empty($_POST['track_id'])? sanitize_text_field($_POST['track_id']) : (!empty($_GET['track_id'])? sanitize_text_field($_GET['track_id']) : NULL);
-    $id        = !empty($_POST['id'])      ? sanitize_text_field($_POST['id'])       : (!empty($_GET['id'])      ? sanitize_text_field($_GET['id'])       : NULL);
+    $trans_id        = !empty($_POST['id'])      ? sanitize_text_field($_POST['id'])       : (!empty($_GET['id'])      ? sanitize_text_field($_GET['id'])       : NULL);
     $order_id  = !empty($_POST['order_id'])? sanitize_text_field($_POST['order_id']) : (!empty($_GET['order_id'])? sanitize_text_field($_GET['order_id']) : NULL);
 	$params    = !empty($_POST['id']) ? $_POST : $_GET;
 
-    if( empty($order_id) || empty($id) ){
+    if( empty($order_id) || empty($trans_id) ){
         return;
     }
 
@@ -135,7 +133,7 @@ function rcp_idpay_verify() {
     $user_id = intval( $payment_data->user_id );
     $subscription_name = $payment_data->subscription;
 
-    if ( $payment_data->status != 'pending' ||  $payment_data->gateway != 'idpay' || $payment_data->transaction_id != $id || $payment_data->id != $order_id ) {
+    if ( $payment_data->status != 'pending' ||  $payment_data->gateway != 'idpay' || $payment_data->transaction_id != $trans_id || $payment_data->id != $order_id ) {
         return;
     }
 
@@ -148,10 +146,10 @@ function rcp_idpay_verify() {
     }
     else {
 
-        rcp_idpay_check_verification( $id );
+        rcp_idpay_check_verification( $trans_id );
 
         $data = array(
-            'id'		=> $id,
+            'id'		=> $trans_id,
             'order_id'	=> $order_id,
         );
 
@@ -194,13 +192,12 @@ function rcp_idpay_verify() {
                     'subscription_key'	=> $payment_data->subscription_key,
                     'amount'			=> $result->amount,
                     'user_id'			=> $user_id,
-                    'transaction_id'	=> $id,
+                    'transaction_id'	=> $trans_id,
                 );
 
                 $rcp_payments = new RCP_Payments();
-                $payment_id = $rcp_payments->insert( $payment_data );
                 $rcp_payments->update( $order_id, array( 'status' => 'complete' ) );
-                rcp_idpay_set_verification( $payment_id, $id );
+                rcp_idpay_set_verification( $order_id, $trans_id );
 
                 $new_subscription_id = get_user_meta( $user_id, 'rcp_subscription_level_new', true );
                 if ( ! empty( $new_subscription_id ) ) {
@@ -228,7 +225,7 @@ function rcp_idpay_verify() {
 
                 $log_data = array(
                     'post_title'   => __( 'Payment complete', 'idpay-for-rcp' ),
-                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->gateway
+                    'post_content' => __( 'Transaction ID: ', 'idpay-for-rcp' ) . $trans_id . __( ' / Payment method: ', 'idpay-for-rcp' ) . $payment_data->gateway
 						. ' Data: ' . print_r($result, true),
                     'post_parent'  => 0,
                     'log_type'     => 'gateway_error'

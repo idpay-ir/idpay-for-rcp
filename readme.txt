@@ -1,8 +1,8 @@
 === IDPay for Restrict Content Pro (RCP) ===
-Contributors: parnibraan, vispa
+Contributors: parnibraan, vispa, Mohammad-Malek
 Tags: idpay, restrict-content-pro, payment, gateway, آیدی پی
-Stable tag: 1.1.0
-Tested up to: 5.7.2
+Stable tag: 1.2.0
+Tested up to: 6.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,10 @@ After creating a web service on https://idpay.ir and getting an API Key, follow 
 After that, if a customer is going to purchase a membership plan which is created byRestrict Content Pro, The IDPay payment gateway will appear and she can pay with it.
 
 == Changelog ==
+
+= 1.2.0, June 21, 2022 =
+* Fix Changing Membership
+* Fix Email Verification Process After Payment
 
 = 1.1.0, June 7, 2021 =
 * make plugin compatible up to Restrict Content Pro version 3.5.3

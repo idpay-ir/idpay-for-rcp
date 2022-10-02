@@ -71,7 +71,7 @@ final class RCP_IDPay {
 
 		// Plugin version.
 		if ( ! defined( 'RCP_IDPAY_VERSION' ) ) {
-			define( 'RCP_IDPAY_VERSION', '1.1.0' );
+			define( 'RCP_IDPAY_VERSION', '1.2.0' );
 		}
 
 		// Plugin directory path.
