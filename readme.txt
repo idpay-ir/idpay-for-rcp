@@ -28,8 +28,8 @@ After that, if a customer is going to purchase a membership plan which is create
 == Changelog ==
 
 = 1.2.0, June 21, 2022 =
-* Fix changing membership
-* Fix Email verification process after payment
+* Fix Changing Membership
+* Fix Email Verification Process After Payment
 
 = 1.1.0, June 7, 2021 =
 * make plugin compatible up to Restrict Content Pro version 3.5.3
