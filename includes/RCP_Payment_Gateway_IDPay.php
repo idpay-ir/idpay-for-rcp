@@ -3,20 +3,23 @@
  * Payment Gateway For IDOay
  */
 
-class RCP_Payment_Gateway_IDPay extends RCP_Payment_Gateway {
+class RCP_Payment_Gateway_IDPay extends RCP_Payment_Gateway
+{
 
 	/**
 	 * @access public
 	 * @return void
 	 */
-	public function init() {
+	public function init()
+	{
 		$this->supports[] = 'one-time';
 	}
 
 	/**
 	 * @since 3.2
 	 */
-	public function process_ajax_signup() {
+	public function process_ajax_signup()
+	{
 		rcp_idpay_create_payment($this->subscription_data);
 	}
 
@@ -24,15 +27,17 @@ class RCP_Payment_Gateway_IDPay extends RCP_Payment_Gateway {
 	 * @access public
 	 * @return void
 	 */
-	public function process_signup() {
+	public function process_signup()
+	{
 		rcp_idpay_create_payment($this->subscription_data);
 	}
 
 	/**
-	 * @since 2.7
 	 * @return bool True if the subscription is eligible for a trial, false if not.
+	 * @since 2.7
 	 */
-	public function is_trial() {
+	public function is_trial()
+	{
 		return false;
 	}
 
@@ -45,11 +50,12 @@ class RCP_Payment_Gateway_IDPay extends RCP_Payment_Gateway {
 	 *
 	 * @param RCP_Membership $membership
 	 *
-	 * @since 3.4
 	 * @return true|WP_Error True on success, WP_Error object on failure.
+	 * @since 3.4
 	 */
-	public function create_off_site_subscription( $membership ) {
-		return new WP_Error( 'not_supported', __( 'This feature is not supported by the chosen payment method.', 'rcp' ) );
+	public function create_off_site_subscription($membership)
+	{
+		return new WP_Error('not_supported', __('This feature is not supported by the chosen payment method.', 'rcp'));
 	}
 
 }
