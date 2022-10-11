@@ -27,7 +27,11 @@ After that, if a customer is going to purchase a membership plan which is create
 
 == Changelog ==
 
-= 1.2.0, June 21, 2022 =
+= 1.2.1, June 18, 2022 =
+* First Official Release
+* Tested Up With Wordpress 6.0 And RCP Plugin 3.5.3
+* Check Double Spending Correct
+* Check Does Not Xss Attack Correct
 * Fix Changing Membership
 * Fix Email Verification Process After Payment
 
