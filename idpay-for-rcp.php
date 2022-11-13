@@ -3,7 +3,7 @@
  * Plugin Name: IDPay for Restrict Content Pro
  * Author: IDPay
  * Description: <a href="https://idpay.ir">IDPay</a> secure payment gateway for Restrict Content Pro
- * Version: 1.1.0
+ * Version: 1.2.2
  * Author URI: https://idpay.ir
  * Text Domain: idpay-for-rcp
  * Domain Path: languages
